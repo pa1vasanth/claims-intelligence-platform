@@ -1,0 +1,61 @@
+MEDICARE PHYSICIAN BILLING GUIDELINES AND COMPLIANCE STANDARDS
+
+1. EVALUATION & MANAGEMENT (E/M) CODING
+E/M codes (99202-99215) are the most frequently billed physician codes.
+
+Complexity Levels:
+- 99202/99212: Straightforward - minimal presenting problem, minimal decision-making
+- 99203/99213: Low complexity - low-risk treatment options, limited data review
+- 99204/99214: Moderate complexity - multiple chronic conditions, prescription drug management
+- 99205/99215: High complexity - severe exacerbations, drug therapy requiring intensive monitoring
+
+RED FLAGS for E/M Upcoding:
+- Provider billing 99215 (highest E/M) for >20% of all visits (national average: ~5%)
+- Identical E/M level for every patient regardless of complexity
+- E/M code billed same day as procedure without documented separate reason
+
+2. HCPCS PROCEDURE CODE BILLING RULES
+- 99221 (Initial Hospital Care, low complexity): Avg Medicare payment ~$55-$75
+- 99222 (Initial Hospital Care, moderate complexity): Avg Medicare payment ~$90-$110
+- 99223 (Initial Hospital Care, high complexity): Avg Medicare payment ~$140-$160
+- 93000 (ECG with interpretation): Avg Medicare payment ~$15-$20
+- 71046 (Chest X-Ray 2 views): Avg Medicare payment ~$25-$35
+
+3. FRAUD AND ABUSE INDICATORS
+HIGH RISK patterns:
+- Billing for services not rendered (phantom billing)
+- Unbundling: billing separately for services that should be billed together
+- Place of service errors: billing facility rates for services in office setting
+- Excessive units: billing more units of a service than clinically reasonable
+- Duplicate billing: submitting same claim more than once
+
+STATISTICAL THRESHOLDS:
+- Provider billing more than 3 standard deviations above peer average for any code = audit trigger
+- Average submitted charge exceeding national benchmark by >400% = high fraud risk
+- Total services per beneficiary per year >50 for same procedure code = high fraud risk
+
+4. SPECIALTY-SPECIFIC BENCHMARKS
+Hospitalists (Average per patient per admission):
+- Expected E/M services: 3-7 visits per admission
+- Expected charges: $200-$500 per admission
+- Red flag: >$1,500 per patient per single admission
+
+Radiologists:
+- Most procedures: 1 read per study
+- Red flag: Multiple reads of same study billed
+
+Cardiologists:
+- Stress tests (93015): typically once per year per patient
+- Red flag: Monthly stress tests for same patient
+
+5. PARTICIPATING PROVIDER RULES
+- Participating providers must accept Medicare assignment
+- Cannot charge more than Medicare-approved amount
+- Non-participating providers can charge up to 115% of approved amount
+- Limiting charge violations are subject to civil monetary penalties
+
+6. DOCUMENTATION REQUIREMENTS
+- All services must be documented within 24 hours of service
+- Signatures: must be legible, dated, and timed
+- Teaching physician rules: must personally document involvement
+- Electronic health records: audit trail must be maintained

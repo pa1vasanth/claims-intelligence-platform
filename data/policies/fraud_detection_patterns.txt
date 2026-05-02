@@ -1,0 +1,78 @@
+MEDICARE FRAUD, WASTE, AND ABUSE DETECTION PATTERNS
+
+1. COMMON FRAUD SCHEMES IN MEDICARE CLAIMS
+
+A. UPCODING
+Definition: Billing for a higher level of service than was actually provided.
+Example: Billing a complex surgical procedure (high-reimbursement DRG) when a simpler
+         procedure was performed. Or billing 99215 (high complexity E/M) for a routine visit.
+Indicators:
+- Systematic shift to higher DRG weights over time without clinical justification
+- E/M level distribution skewed heavily toward highest codes
+- Outlier payments triggered consistently at single provider
+
+B. PHANTOM BILLING
+Definition: Billing for services never rendered to patients.
+Indicators:
+- Deceased beneficiaries appearing on claims after date of death
+- Services billed while beneficiary was in another facility
+- Beneficiary has no record of receiving service
+- Claim submitted for future dates
+
+C. UNBUNDLING
+Definition: Billing separately for services that should be billed as one bundled procedure.
+Example: Billing each component of a surgical package separately instead of the global fee.
+Indicators:
+- Multiple codes billed that CMS bundling edits prohibit
+- Modifier 59 (distinct service) applied excessively to bypass edits
+
+D. KICKBACKS AND REFERRAL FRAUD
+Indicators:
+- Unusual referral patterns: provider refers exclusively to one specialist
+- Billing volume spikes after proximity to referring provider
+- DME suppliers with no clinical relationship to ordering physicians
+
+E. IDENTITY THEFT AND BILLING FRAUD
+Indicators:
+- Multiple providers billing for same beneficiary on same date
+- Provider using expired or revoked NPI
+- Claims submitted from addresses that are not medical facilities
+
+2. STATISTICAL ANOMALY DETECTION THRESHOLDS
+
+Charge-to-Payment Ratio Benchmarks:
+- <3.0 : Normal range
+- 3.0-6.0 : Acceptable, some variance expected
+- 6.0-10.0 : Elevated, warrants monitoring
+- 10.0-15.0 : High risk, manual review recommended
+- >15.0 : Very high risk, immediate audit flag
+
+Geographic Variance:
+- Providers billing >200% of regional average for same service = audit flag
+- Sudden geographic expansion of billing (new states/regions) = flag
+
+Volume Anomalies:
+- Provider billing same procedure >10x per day = flag
+- Single provider billing >24 hours of time per day = impossible, automatic flag
+- New provider billing at maximum level immediately = flag (no learning curve)
+
+3. MEDICARE ERROR RATE TESTING (CERT) COMMON ERROR TYPES
+- No documentation: Provider cannot produce medical records
+- Insufficient documentation: Records don't support level billed
+- Medically unnecessary: Service not reasonable/necessary per coverage rules
+- Incorrect coding: Service coded does not match documentation
+- Other billing errors: Wrong beneficiary, duplicate claim, non-covered service
+
+4. RISK SCORING METHODOLOGY
+Risk Score 0-100:
+- 0-25: Low risk - routine processing
+- 26-50: Moderate risk - secondary review recommended
+- 51-75: High risk - pre-payment review required
+- 76-100: Critical risk - immediate investigation, payment suspension
+
+Key Risk Factors (weighted):
+- Charge-to-payment ratio (25% weight)
+- Deviation from peer benchmark (25% weight)
+- Volume anomalies (20% weight)
+- Historical error rate for provider (15% weight)
+- Specialty/procedure mismatch (15% weight)

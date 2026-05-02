@@ -1,0 +1,38 @@
+MEDICARE INPATIENT PROSPECTIVE PAYMENT SYSTEM (IPPS) - DRG PAYMENT RULES
+
+1. OVERVIEW
+Medicare pays hospitals for inpatient services using a fixed rate per Diagnosis Related Group (DRG).
+The DRG payment is based on the patient's principal diagnosis, secondary diagnoses, procedures,
+age, sex, and discharge status.
+
+2. HIGH-COST DRG CATEGORIES AND EXPECTED CHARGE RATIOS
+- DRG 001-013 (Nervous System, Complex): Expected charge-to-payment ratio: 4x to 8x
+- DRG 003 (ECMO/Tracheostomy with MV >96 hours): Avg payment ~$80,000-$120,000
+- DRG 023 (Craniotomy with Major Device): Avg payment ~$35,000-$50,000
+- DRG 207 (Respiratory System Diagnoses): Avg payment ~$8,000-$15,000
+- DRG 470 (Hip/Knee Replacement): Avg payment ~$12,000-$18,000
+- DRG 871/872 (Septicemia): Avg payment ~$10,000-$25,000
+
+3. FRAUD INDICATORS - INPATIENT CLAIMS
+RED FLAGS requiring review:
+- Charge-to-payment ratio exceeding 15:1 (industry norm is 3:1 to 8:1)
+- Total discharges for rare DRGs exceeding 50 per year at a single facility
+- Average submitted charge deviating more than 300% from state/national average
+- Upcoding: billing higher-severity DRGs without documented clinical justification
+- DRG creep: systematic pattern of assigning higher-weighted DRGs over time
+
+4. OUTLIER PAYMENT POLICY
+Outlier payments are made when the cost of treating a patient significantly exceeds the DRG payment.
+Threshold: If the cost exceeds the DRG payment by more than the fixed-loss amount (~$38,788 in FY2024),
+Medicare pays 80% of the excess. Abuse: Providers inflating charges to trigger outlier payments.
+
+5. COMPLIANCE REQUIREMENTS
+- Medical records must support the DRG billed within 30 days of request
+- All diagnoses must be present on admission (POA indicator required)
+- Principal diagnosis: the condition chiefly responsible for admission after study
+- CC/MCC (Complications/Comorbidities): must be documented and clinically validated
+
+6. BUNDLING RULES
+- Transfer cases: payment is reduced when patient transferred within 24 hours
+- Same-day readmissions within 30 days: subject to review for inappropriate discharge
+- Procedures performed at same facility on same day must be bundled

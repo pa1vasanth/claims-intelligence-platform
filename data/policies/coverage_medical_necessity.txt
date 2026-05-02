@@ -1,0 +1,63 @@
+MEDICARE COVERAGE AND MEDICAL NECESSITY GUIDELINES
+
+1. MEDICAL NECESSITY STANDARD
+Medicare covers services that are "reasonable and necessary for the diagnosis or treatment of
+illness or injury or to improve the functioning of a malformed body member."
+(Social Security Act Section 1862(a)(1)(A))
+
+Services NOT covered:
+- Experimental or investigational treatments without approved clinical trial
+- Cosmetic procedures unless medically required
+- Routine physical examinations (with exceptions for Welcome to Medicare visit)
+- Dental, vision, hearing aids (standard exclusions)
+- Custodial care (not skilled care)
+
+2. LOCAL COVERAGE DETERMINATIONS (LCDs)
+Each Medicare Administrative Contractor (MAC) publishes LCDs specifying:
+- Which diagnosis codes support coverage for a specific procedure
+- Frequency limitations (how often a service is covered)
+- Documentation requirements specific to that service
+
+Common LCD Requirements:
+- Sleep studies (PSG/HSAT): Must have documented symptoms of sleep apnea (snoring, daytime
+  sleepiness, witnessed apneas) before testing is covered
+- Continuous glucose monitoring: Requires Type 1 or insulin-requiring Type 2 diabetes diagnosis
+- Physical therapy: Requires documented functional limitation and expected improvement
+- Imaging (MRI/CT): Must have clinical indication; not covered for routine screening
+
+3. NATIONAL COVERAGE DETERMINATIONS (NCDs)
+NCDs set national standards that override local policies:
+- Implantable cardiac monitors: Covered for unexplained syncope or AF detection
+- CAR-T therapy: Covered only at approved facilities with REMS program
+- Lung cancer screening (LDCT): Ages 50-77, 20 pack-year smoking history, current or
+  quit within 15 years, shared decision-making visit required
+
+4. FREQUENCY AND QUANTITY LIMITS
+Procedure-specific limits (examples):
+- Colonoscopy (high risk): Every 2 years
+- Colonoscopy (average risk): Every 10 years
+- Mammography: Annually age 40+
+- DEXA bone density scan: Every 2 years (more frequent if osteoporosis diagnosis)
+- EKG: Covered for new patients or specific cardiac indications
+- Vitamin B12 injections: Maximum 1 per month for pernicious anemia
+
+Exceeding frequency limits without clinical justification = non-covered service.
+
+5. INPATIENT ADMISSION CRITERIA (InterQual/Milliman)
+For inpatient admission to be covered:
+- Patient must require services that can only be provided in inpatient setting
+- Condition must be expected to require 2+ midnight stays (Two-Midnight Rule)
+- Observation status should be used for shorter stays
+- Exceptions: Procedures on inpatient-only list (e.g., hip replacement, major cardiac surgery)
+
+Two-Midnight Rule violations:
+- Inpatient admission for single-day procedure covered under outpatient benefit
+- Example: Cataract surgery billed as inpatient when should be outpatient
+- Financial impact: Full inpatient DRG payment vs. APC outpatient payment
+
+6. ADVANCE BENEFICIARY NOTICE (ABN)
+When a service is likely not covered:
+- Provider must issue ABN before delivering service
+- Beneficiary must sign and choose to proceed at own expense
+- Without ABN: Provider cannot bill beneficiary if Medicare denies
+- Required for: Services expected to be denied as not medically necessary

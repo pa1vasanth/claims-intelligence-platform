@@ -1,0 +1,21 @@
+# Environment & secrets — NEVER commit these
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Data & generated files
+data/claims.db
+data/chroma_db/
+
+# Virtual envs
+venv/
+.venv/
+env/
+
+# OS
+.DS_Store
