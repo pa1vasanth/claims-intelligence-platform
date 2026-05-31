@@ -126,45 +126,136 @@ Respond ONLY in this exact JSON format:
     return _call_llm(prompt, retrieved)
 
 
-def ask_question_about_claim(claim: dict, question: str, claim_type: str = "inpatient") -> str:
+def analyze_outpatient_claim(claim: dict) -> dict:
+    """RAG + LLM pipeline for an outpatient hospital claim."""
+    query = (
+        f"APC {claim.get('apc_code')} {claim.get('apc_description')} "
+        f"outpatient hospital billing compliance charge ratio "
+        f"{claim.get('charge_to_allowed_ratio')} fraud indicators"
+    )
+    retrieved = retrieve_relevant_policies(query, n_results=3)
+    policy_context = _format_context(retrieved)
+
+    charge = claim.get('avg_submitted_charge', 0) or 0
+    allowed = claim.get('avg_medicare_allowed', 0) or 0
+    ratio = claim.get('charge_to_allowed_ratio', 0) or 0
+
+    prompt = f"""You are a Medicare claims intelligence analyst. Analyze the following outpatient hospital claim for potential fraud, waste, or abuse.
+
+## RETRIEVED POLICY CONTEXT (from knowledge base)
+{policy_context}
+
+## CLAIM DETAILS
+- Hospital: {claim.get('provider_name')} ({claim.get('city')}, {claim.get('state')})
+- APC Code: {claim.get('apc_code')} — {claim.get('apc_description')}
+- Beneficiary Count: {claim.get('beneficiary_count')}
+- Total Services: {claim.get('total_services')}
+- Average Submitted Charge: ${charge:,.2f}
+- Average Medicare Allowed: ${allowed:,.2f}
+- Average Medicare Payment: ${claim.get('avg_medicare_payment', 0):,.2f}
+- Outlier Services: {claim.get('outlier_services')}
+- Charge-to-Allowed Ratio: {ratio}x
+
+## TASK
+Analyze this outpatient claim for fraud risk based on the policy context above.
+
+Respond ONLY in this exact JSON format:
+{{
+  "risk_score": <integer 0-100>,
+  "risk_label": "<Low|Moderate|High|Critical>",
+  "key_findings": ["<finding 1>", "<finding 2>", "<finding 3>"],
+  "policy_concerns": "<specific policy or rule that may be violated>",
+  "recommended_action": "<action to take>",
+  "explanation": "<2-3 sentence summary>"
+}}"""
+
+    return _call_llm(prompt, retrieved)
+
+
+def ask_question_about_claim(claim: dict, question: str, claim_type: str = "inpatient",
+                              chat_history: list = None) -> str:
     """
     Free-form Q&A about a specific claim — demonstrates conversational RAG.
     User can ask follow-up questions like:
       "Why is this DRG code suspicious?"
       "What documentation is required for this procedure?"
     """
+    if chat_history is None:
+        chat_history = []
+
     if claim_type == "inpatient":
         context_query = f"{question} DRG {claim.get('drg_code')} inpatient hospital"
+    elif claim_type == "outpatient":
+        context_query = f"{question} APC {claim.get('apc_code')} outpatient hospital"
     else:
         context_query = f"{question} HCPCS {claim.get('hcpcs_code')} physician billing"
 
     retrieved = retrieve_relevant_policies(context_query, n_results=3)
     policy_context = _format_context(retrieved)
 
-    prompt = f"""You are a Medicare claims expert. Answer the following question about a claim, using the policy context provided.
+    # System message with claim context + retrieved policies
+    system_msg = f"""You are a Medicare claims expert. Answer questions about the following claim using the policy context provided. Be concise (3-5 sentences).
 
 ## RETRIEVED POLICY CONTEXT
 {policy_context}
 
-## CLAIM SUMMARY
-{json.dumps(claim, indent=2)}
+## CLAIM
+{json.dumps({k: v for k, v in claim.items() if k not in ['id', 'ingested_at']}, indent=2)}"""
 
-## QUESTION
-{question}
-
-Provide a clear, concise answer (3-5 sentences) grounded in the policy context above."""
+    # Build messages: system + full chat history + new question
+    messages = [{"role": "system", "content": system_msg}]
+    for msg in chat_history:
+        messages.append({"role": msg["role"], "content": msg["content"]})
+    messages.append({"role": "user", "content": question})
 
     try:
         client = get_groq_client()
         response = client.chat.completions.create(
             model=GROQ_MODEL,
-            messages=[{"role": "user", "content": prompt}],
+            messages=messages,
             temperature=0.3,
             max_tokens=400,
         )
         return response.choices[0].message.content
     except Exception as e:
         return f"Error: {e}"
+
+
+def batch_analyze_claims(claims: list, claim_type: str, progress_callback=None) -> list:
+    """
+    Analyze a list of claims in batch.
+    progress_callback(i, total) is called after each claim so the UI can show a progress bar.
+    Returns list of dicts: original claim + analysis fields merged together.
+    """
+    results = []
+    total = len(claims)
+    for i, claim in enumerate(claims):
+        try:
+            if claim_type == "inpatient":
+                analysis = analyze_inpatient_claim(claim)
+            elif claim_type == "outpatient":
+                analysis = analyze_outpatient_claim(claim)
+            else:
+                analysis = analyze_physician_claim(claim)
+
+            merged = {**claim}
+            merged["risk_score"] = analysis.get("risk_score", 0)
+            merged["risk_label"] = analysis.get("risk_label", "Unknown")
+            merged["key_findings"] = " | ".join(analysis.get("key_findings", []))
+            merged["policy_concerns"] = analysis.get("policy_concerns", "")
+            merged["recommended_action"] = analysis.get("recommended_action", "")
+            merged["explanation"] = analysis.get("explanation", "")
+            results.append(merged)
+        except Exception as e:
+            merged = {**claim, "risk_score": 0, "risk_label": "Error",
+                      "key_findings": str(e), "policy_concerns": "",
+                      "recommended_action": "Retry", "explanation": str(e)}
+            results.append(merged)
+
+        if progress_callback:
+            progress_callback(i + 1, total)
+
+    return results
 
 
 def _format_context(retrieved: list[dict]) -> str:

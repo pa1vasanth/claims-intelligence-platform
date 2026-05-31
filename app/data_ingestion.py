@@ -49,6 +49,25 @@ def init_db():
         )
     """)
     c.execute("""
+        CREATE TABLE IF NOT EXISTS outpatient_claims (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            provider_ccn TEXT,
+            provider_name TEXT,
+            city TEXT,
+            state TEXT,
+            apc_code TEXT,
+            apc_description TEXT,
+            beneficiary_count INTEGER,
+            total_services INTEGER,
+            avg_submitted_charge REAL,
+            avg_medicare_allowed REAL,
+            avg_medicare_payment REAL,
+            outlier_services INTEGER,
+            charge_to_allowed_ratio REAL,
+            ingested_at TEXT
+        )
+    """)
+    c.execute("""
         CREATE TABLE IF NOT EXISTS claim_analyses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             claim_id TEXT,
@@ -76,6 +95,69 @@ def fetch_cms_data(api_url: str, size: int = 500, filters: dict = None) -> list:
     except Exception as e:
         print(f"[CMS API Error] {api_url}: {e}")
         return []
+
+
+def ingest_outpatient(limit: int = 200) -> int:
+    records = fetch_cms_data(CMS_APIS["outpatient"], size=limit)
+    if not records:
+        return 0
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("DELETE FROM outpatient_claims")
+
+    count = 0
+    now = datetime.utcnow().isoformat()
+    for r in records:
+        try:
+            avg_charge = float(r.get("Avg_Tot_Sbmtd_Chrgs", 0) or 0)
+            avg_allowed = float(r.get("Avg_Mdcr_Alowd_Amt", 0) or 0)
+            ratio = round(avg_charge / avg_allowed, 2) if avg_allowed > 0 else 0
+
+            c.execute("""
+                INSERT INTO outpatient_claims
+                (provider_ccn, provider_name, city, state, apc_code, apc_description,
+                 beneficiary_count, total_services, avg_submitted_charge,
+                 avg_medicare_allowed, avg_medicare_payment, outlier_services,
+                 charge_to_allowed_ratio, ingested_at)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            """, (
+                r.get("Rndrng_Prvdr_CCN", ""),
+                r.get("Rndrng_Prvdr_Org_Name", ""),
+                r.get("Rndrng_Prvdr_City", ""),
+                r.get("Rndrng_Prvdr_State_Abrvtn", ""),
+                r.get("APC_Cd", ""),
+                r.get("APC_Desc", ""),
+                int(float(r.get("Bene_Cnt", 0) or 0)),
+                int(float(r.get("CAPC_Srvcs", 0) or 0)),
+                avg_charge,
+                avg_allowed,
+                float(r.get("Avg_Mdcr_Pymt_Amt", 0) or 0),
+                int(float(r.get("Outlier_Srvcs", 0) or 0)),
+                ratio,
+                now,
+            ))
+            count += 1
+        except Exception:
+            continue
+
+    conn.commit()
+    conn.close()
+    return count
+
+
+def get_outpatient_claims(limit: int = 50) -> list:
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute("""
+        SELECT * FROM outpatient_claims
+        ORDER BY charge_to_allowed_ratio DESC
+        LIMIT ?
+    """, (limit,))
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
 
 
 def ingest_inpatient(limit: int = 200) -> int:
@@ -216,6 +298,12 @@ def get_stats() -> dict:
     stats["physician_count"] = row[0] or 0
     stats["physician_avg_charge"] = round(row[1] or 0, 2)
     stats["physician_avg_payment"] = round(row[2] or 0, 2)
+
+    c.execute("SELECT COUNT(*), AVG(avg_submitted_charge), AVG(avg_medicare_payment) FROM outpatient_claims")
+    row = c.fetchone()
+    stats["outpatient_count"] = row[0] or 0
+    stats["outpatient_avg_charge"] = round(row[1] or 0, 2)
+    stats["outpatient_avg_payment"] = round(row[2] or 0, 2)
 
     c.execute("SELECT COUNT(*) FROM claim_analyses")
     stats["analyses_count"] = c.fetchone()[0] or 0
